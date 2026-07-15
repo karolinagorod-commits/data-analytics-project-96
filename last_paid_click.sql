@@ -11,14 +11,16 @@ with tab as (
         l.closing_reason,
         l.status_id,
         row_number()
-            over (partition by s.visitor_id order by s.visit_date desc)
+            over (partition by s.visitor_id order by 
+s.visit_date desc)
             as rn
     from sessions as s
     left join leads as l
         on
             s.visitor_id = l.visitor_id
             and s.visit_date <= l.created_at
-    where s.medium in ('cpc', 'cpm', 'cpa', 'youtube', 'cpp', 'tg', 'social')
+    where s.medium in ('cpc', 'cpm', 'cpa', 'youtube', 
+'cpp', 'tg', 'social')
 )
 
 select
@@ -35,4 +37,9 @@ select
 from tab
 where rn = 1
 order by
-    amount desc nulls last, visit_date asc, utm_source asc, utm_medium asc, utm_campaign asc;
+    amount desc nulls last,
+    visit_date asc,
+    utm_source asc,
+    utm_medium asc,
+    utm_campaign asc
+limit 10;
